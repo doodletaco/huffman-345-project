@@ -29,6 +29,16 @@ public class HuffmanDecode {
     }
 
     /**
+     * Overloaded decode method to allow for passing in two file names to decode text.
+     * @param keyFile The path to the key file for the text to be decoded.
+     * @param textFile The path to the text to be decoded.
+     * @return
+     */
+    public static String decode(String keyFile, String textFile) {
+        return decode(makeTree(keyFile), getContents(textFile));
+    }
+
+    /**
      * With the filename containing the key, create a tree representing the code.
      * @param fName The file name.
      * @return      A tree containing the key, or null if the file does not exist.

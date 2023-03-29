@@ -5,6 +5,8 @@ import java.io.FileWriter;
 
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
 public class HuffmanEncode {
 
@@ -20,7 +22,7 @@ public class HuffmanEncode {
 	 */
 	public static void encode(String file) {
 		String fileContent = openFile(file);
-		MinPQ chars = analyzeFrequencies(fileContent);
+		PriorityQueue<Element> chars = analyzeFrequencies(fileContent);
 		Node root = createTree(chars);
 		HashMap<String, String> codes = generateCodes(root);
 		String compressedFile = compressFile(codes, fileContent);
@@ -33,8 +35,17 @@ public class HuffmanEncode {
 	 * @param file The file to analyze.
 	 * @return A MinPQ of the characters in the file, based on frequency.
 	 */
-	private static MinPQ analyzeFrequencies(String file) {
-		MinPQ chars = new MinPQ();
+	private static PriorityQueue<Element> analyzeFrequencies(String file) {
+		PriorityQueue<Element> chars = new PriorityQueue<>(11, new Comparator<Element>() {
+			@Override
+			public int compare(Element e1, Element e2) {
+				if(e1.priority < e2.priority) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		});
 		HashMap<String, Integer> freq = new HashMap<>();
 		for(int i = 0; i < file.length(); i++) {
 			String curr = String.valueOf(file.charAt(i));
@@ -46,7 +57,7 @@ public class HuffmanEncode {
 		}
 		Object[] keys = freq.keySet().toArray();
 		for (Object key : keys) {
-			chars.insert((String) key, freq.get(key));
+			chars.add(new Element((String) key, freq.get(key)));
 		}
 		return chars;
 	}
@@ -56,26 +67,26 @@ public class HuffmanEncode {
 	 * @param chars A MinPQ with the characters of the file ordered by frequency.
 	 * @return The root of the tree.
 	 */
-	public static Node createTree(MinPQ chars) {
+	public static Node createTree(PriorityQueue<Element> chars) {
 		Node root = new Node(0);
 		int numLetters = chars.size();
 		if(numLetters == 1) { // If there is only one letter, hardcode to 0.
 			root.setVal(0);
-			root.left = new Node(chars.delMin());
+			root.left = new Node(chars.poll().val);
 			return root;
 		}
 		// Add in first two nodes, this is done differently from the other nodes
-		int priority1 = chars.getMinPriority();
-		Node lChild = new Node(chars.delMin());
-		int priority2 = chars.getMinPriority();
-		Node rChild = new Node(chars.delMin());
+		int priority1 = chars.peek().priority;
+		Node lChild = new Node(chars.poll().val);
+		int priority2 = chars.peek().priority;
+		Node rChild = new Node(chars.poll().val);
 		root.left = lChild;
 		root.right = rChild;
 		root.setVal(priority1+priority2);
 
 		while(!chars.isEmpty()) { // Create the tree of characters based on priority.
-			int priority = chars.getMinPriority();
-			String content = chars.delMin();
+			int priority = chars.peek().priority;
+			String content = chars.poll().val;
 			Node newRoot = new Node(0);
 			if(root.val instanceof Integer && priority > (Integer)root.val) {
 				newRoot.right = new Node(content);
@@ -167,14 +178,14 @@ public class HuffmanEncode {
 			keyWriter.close();
 			compressedWriter.close();
 		} catch (IOException e) {
-			System.out.println("File already exists!");
+			System.out.println("Invalid file location!");
 			System.exit(-1);
 		}
 	}
 
 	/**
 	 * Prints out a binary tree in in-order order, recursively.
-	 * @param root The root of the tree
+	 * @param root The root of the tree.
 	 */
 	private static void printTree(Node root) {
 		if(root == null) {
@@ -188,7 +199,7 @@ public class HuffmanEncode {
 	/**
 	 * Returns a String with the entire contents of a file.
 	 * @param fileName The file to open.
-	 * @return The entire text of a string.
+	 * @return The entire text of a file as a string.
 	 */
 	private static String openFile(String fileName) {
 		Scanner scan;
@@ -228,6 +239,21 @@ public class HuffmanEncode {
 		 */
 		public void setVal(Object value) {
 			val = value;
+		}
+	}
+
+	private static class Element{
+		public String val;
+		public int priority;
+
+		/**
+		 * Creates an element with a given value and priority.
+		 * @param val The new value.
+		 * @param priority The new priority.
+		 */
+		public Element(String val, int priority) {
+			this.priority = priority;
+			this.val = val;
 		}
 	}
 }

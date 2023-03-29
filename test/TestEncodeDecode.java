@@ -1,10 +1,15 @@
 public class TestEncodeDecode {
 
 	public static void main(String [] args) {
-		String file = args[0];
+		String file;
+		if (args.length == 0) { // Runs the example file if there is no file provided.
+			file = "test/test-files/Huffman_text_test.txt";
+		} else {
+			file = args[0];
+		}
 
-		String pathSep = "/"; // Change between back and forward slashes based on path for
-		if(file.contains("\\")) {
+		String pathSep = "/"; // Change between back and forward slashes based on path to support both
+		if(file.contains("\\")) { // types of file separators.
 			pathSep = "\\";
 		}
 

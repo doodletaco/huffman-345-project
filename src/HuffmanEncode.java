@@ -10,10 +10,6 @@ import java.util.Comparator;
 
 public class HuffmanEncode {
 
-	public static void main (String [] args) {
-		encode(args[0]);
-	}
-
 	/**
 	 * Creates a compressed file using huffman codes for a specified file. Outputs
 	 * two files, one named [FILENAME]-key.txt and [FILENAME]-huffman.txt in the

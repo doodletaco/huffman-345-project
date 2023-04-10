@@ -29,6 +29,16 @@ public class HuffmanDecode {
     }
 
     /**
+     * Overloaded decode method to allow for passing in two file names to decode text.
+     * @param keyFile The path to the key file for the text to be decoded.
+     * @param textFile The path to the text to be decoded.
+     * @return The decoded String.
+     */
+    public static String decode(String keyFile, String textFile) {
+        return decode(makeTree(keyFile), getContents(textFile));
+    }
+
+    /**
      * With the filename containing the key, create a tree representing the code.
      * @param fName The file name.
      * @return      A tree containing the key, or null if the file does not exist.
@@ -46,7 +56,12 @@ public class HuffmanDecode {
             return null;
         }
         while (text.hasNextLine()) {
-            String[] nodeString = text.nextLine().split(",");
+
+            String nextLine = text.nextLine(); // The split method did not allow for
+            String[] nodeString = new String[2]; // commas in the text to be compressed.
+            nodeString[0] = nextLine.substring(0,1); // Decoded character is always at position 0.
+            nodeString[1] = nextLine.substring(2); // Code will always be at position 2.
+
             String content = nodeString[0];
             String location = nodeString[1];
             tree.addNode(location, content);

@@ -1,7 +1,10 @@
 public class TestDecode {
     public static void main(String[] args) {
-        Tree tree = HuffmanDecode.makeTree("test/test-files/Huffman_key_test.txt");
-        String key = HuffmanDecode.getContents("test/test-files/Huffman_compressed_test.txt");
+        if(args.length < 2) {
+            System.out.println("Bad commandline Arguments!");
+        }
+        Tree tree = HuffmanDecode.makeTree(args[0]);
+        String key = HuffmanDecode.getContents(args[1]);
         String text = HuffmanDecode.decode(tree, key);
         System.out.println(text);
     }

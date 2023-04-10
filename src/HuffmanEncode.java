@@ -156,8 +156,8 @@ public class HuffmanEncode {
 			keyFileText += key + "," + codes.get((String)key) + "\n";
 		}
 
-		String pathSep = "/"; // Change between back and forward slashes based on path for
-		if(file.contains("\\")) {
+		String pathSep = "/"; // Change between back and forward slashes based on path
+		if(file.contains("\\")) { // Helps with compatibility.
 			pathSep = "\\";
 		}
 

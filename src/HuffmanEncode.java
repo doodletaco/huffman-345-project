@@ -85,18 +85,18 @@ public class HuffmanEncode {
 			int priority = chars.peek().priority;
 			String content = chars.poll().val;
 			Tree.Node newRoot = new Tree.Node(0);
-			if(root.val instanceof Integer && priority > (Integer)root.val) {
+			if(priority > (Integer)root.val) {
 				newRoot.right = new Tree.Node(content);
 				newRoot.left = root;
-				newRoot.val = ((Integer)root.val + priority);
 			}
-			else if(root.val instanceof Integer) {
+			else {
 				newRoot.left = new Tree.Node(content);
 				newRoot.right = root;
-				newRoot.val = ((Integer)root.val + priority);
 			}
+			newRoot.val = ((Integer)root.val + priority);
 			root = newRoot;
 		}
+		tree.root = root;
 		return tree;
 	}
 

@@ -50,7 +50,7 @@ public class Tree {
                 currNode = currNode.right;
             }
         }
-        return currNode.val;
+        return currNode.val.toString();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Tree {
         if (node == null) {
             return "";
         }
-        String toPrint = node.val;
+        String toPrint = node.val.toString();
         if (toPrint == null) {
             toPrint = " ";
         }
@@ -76,7 +76,7 @@ public class Tree {
      * A class representing a node of a binary tree.
      */
     class Node {
-        String val;
+        Object val;
         Node left;
         Node right;
 
@@ -84,7 +84,7 @@ public class Tree {
          * Constructor. Creates a new node.
          * @param contents  A string. The contents of the node. May be null.
          */
-        public Node(String contents) {
+        public Node(Object contents) {
             val = contents;
             left = null;
             right = null;

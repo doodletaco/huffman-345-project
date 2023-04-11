@@ -1,6 +1,7 @@
 # Huffman Encoding
 A Huffman code is a method to compress strings into bits. With ASCII, each character takes up 8 bits with 256 total possible characters. However, there is a lot of text which does not require this full range. By accounting for the frequency and using a tree with no duplicate prefixes, more text can be stored in less space. This text compression method can be used in cases where space is a constraint, such as wireless communication.
 This method was created by David A. Huffman in 1950 (1). Although other approaches to this encoding problem have been attempted before, he succeeded by using a bottom-up approach instead of working from the top to the bottom.
+
 ## How to use these files
 ### Encoding
 Compile the files by typing `javac *.java` in the directory containing the source code and the directory containing the testing code. After it has been compiled, type `java TestEncode <file path>` with the file path leading to the specific file to encode.

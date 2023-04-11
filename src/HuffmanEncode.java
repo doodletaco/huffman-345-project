@@ -19,8 +19,8 @@ public class HuffmanEncode {
 	public static void encode(String file) {
 		String fileContent = openFile(file);
 		PriorityQueue<Element> chars = analyzeFrequencies(fileContent);
-		Node root = createTree(chars);
-		HashMap<String, String> codes = generateCodes(root);
+		Tree tree = createTree(chars);
+		HashMap<String, String> codes = generateCodes(tree.root);
 		String compressedFile = compressFile(codes, fileContent);
 		writeFiles(codes, compressedFile, file);
 	}
@@ -63,40 +63,41 @@ public class HuffmanEncode {
 	 * @param chars A MinPQ with the characters of the file ordered by frequency.
 	 * @return The root of the tree.
 	 */
-	public static Node createTree(PriorityQueue<Element> chars) {
-		Node root = new Node(0);
+	public static Tree createTree(PriorityQueue<Element> chars) {
+		Tree tree = new Tree();
+		Tree.Node root = tree.root;
 		int numLetters = chars.size();
 		if(numLetters == 1) { // If there is only one letter, hardcode to 0.
-			root.setVal(0);
-			root.left = new Node(chars.poll().val);
-			return root;
+			root.val = 0;
+			root.left = new Tree.Node(chars.poll().val);
+			return tree;
 		}
 		// Add in first two nodes, this is done differently from the other nodes
 		int priority1 = chars.peek().priority;
-		Node lChild = new Node(chars.poll().val);
+		Tree.Node lChild = new Tree.Node(chars.poll().val);
 		int priority2 = chars.peek().priority;
-		Node rChild = new Node(chars.poll().val);
+		Tree.Node rChild = new Tree.Node(chars.poll().val);
 		root.left = lChild;
 		root.right = rChild;
-		root.setVal(priority1+priority2);
+		root.val = (priority1+priority2);
 
 		while(!chars.isEmpty()) { // Create the tree of characters based on priority.
 			int priority = chars.peek().priority;
 			String content = chars.poll().val;
-			Node newRoot = new Node(0);
+			Tree.Node newRoot = new Tree.Node(0);
 			if(root.val instanceof Integer && priority > (Integer)root.val) {
-				newRoot.right = new Node(content);
+				newRoot.right = new Tree.Node(content);
 				newRoot.left = root;
-				newRoot.setVal((Integer)root.val + priority);
+				newRoot.val = ((Integer)root.val + priority);
 			}
 			else if(root.val instanceof Integer) {
-				newRoot.left = new Node(content);
+				newRoot.left = new Tree.Node(content);
 				newRoot.right = root;
-				newRoot.setVal((Integer)root.val + priority);
+				newRoot.val = ((Integer)root.val + priority);
 			}
 			root = newRoot;
 		}
-		return root;
+		return tree;
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class HuffmanEncode {
 	 * @param root The root of the tree to generate codes for.
 	 * @return A hashmap that associates each character with a code.
 	 */
-	private static HashMap<String, String> generateCodes(Node root) {
+	private static HashMap<String, String> generateCodes(Tree.Node root) {
 		HashMap<String, String> codes = new HashMap<>();
 		generateCodesHelper(root, codes, "");
 		return codes;
@@ -116,7 +117,7 @@ public class HuffmanEncode {
 	 * @param codes The hashmap to add codes to.
 	 * @param code The string code up to the point of the node.
 	 */
-	private static void generateCodesHelper(Node root, HashMap<String, String> codes, String code) {
+	private static void generateCodesHelper(Tree.Node root, HashMap<String, String> codes, String code) {
 		if(root == null) { // Base, if the root is null return
 			return;
 		}
@@ -180,19 +181,6 @@ public class HuffmanEncode {
 	}
 
 	/**
-	 * Prints out a binary tree in in-order order, recursively.
-	 * @param root The root of the tree.
-	 */
-	private static void printTree(Node root) {
-		if(root == null) {
-			return;
-		}
-		printTree(root.left);
-		System.out.println(root.val);
-		printTree(root.right);
-	}
-
-	/**
 	 * Returns a String with the entire contents of a file.
 	 * @param fileName The file to open.
 	 * @return The entire text of a file as a string.
@@ -212,30 +200,6 @@ public class HuffmanEncode {
 		}
 		scan.close();
 		return content;
-	}
-
-	private static class Node {
-		Object val;
-		Node left;
-		Node right;
-
-		/**
-		 * Constructor. Creates a new node.
-		 * @param contents  A string. The contents of the node. May be null.
-		 */
-		public Node(Object contents) {
-			val = contents;
-			left = null;
-			right = null;
-		}
-
-		/**
-		 * Set the value of the node to another value.
-		 * @param value A string. May be null.
-		 */
-		public void setVal(Object value) {
-			val = value;
-		}
 	}
 
 	private static class Element{

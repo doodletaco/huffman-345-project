@@ -50,7 +50,7 @@ public class Tree {
                 currNode = currNode.right;
             }
         }
-        return currNode.val.toString();
+        return currNode.val == null ? null : currNode.val.toString();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class Tree {
     /**
      * A class representing a node of a binary tree.
      */
-    class Node {
+    static class Node {
         Object val;
         Node left;
         Node right;
